@@ -12,6 +12,8 @@ const router = require('./routes')
 // configuracion y modelos DB
 const db = require('./config/db')
     require('./models/Usuarios')
+    require('./models/Categorias')
+    require('./models/Grupos')
     db.sync().then(() => console.log('DB Conectada')).catch((error) => console.log(error))
 
 // variables de desarrollo    
