@@ -82,3 +82,37 @@ exports.crearGrupo = async (req, res) => {
         res.redirect('/nuevo-grupo')
     }
 }
+
+exports.formEditarGrupo = async (req, res) => {
+   
+    const consultas = []
+    consultas.push(Grupos.findByPk(req.params.grupoId))
+    consultas.push(Categorias.findAll())
+
+    const [grupo, categorias] = await Promise.all(consultas)
+
+    res.render('editar-grupo', {
+        nombrePagina: `Editar Grupo: ${grupo.nombre}`,
+        grupo,
+        categorias
+    })
+}
+
+exports.editarGrupo = async (req, res) => {
+    const grupo = await Grupos.findOne({where: {id: req.params.grupoId, usuarioId: req.user.id}})
+    if (!grupo) {
+        req.flash('error', 'Operacion no valida')
+        res.redirect('/administracion')
+        return next()
+    }
+
+    const { nombre, descripcion, categoriaId, url } = req.body
+    grupo.nombre = nombre
+    grupo.descripcion = descripcion
+    grupo.categoriaId = categoriaId
+    grupo.url = url
+
+    await grupo.save()
+    req.flash('exito', 'Cambios almacenados correctamente')
+    res.redirect('/administracion')
+}
