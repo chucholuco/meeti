@@ -17,3 +17,4 @@ npm-debug.log
 # Ignore VS Code configuration files (optional)
 .vscode/
 
+public/uploads/grupos/

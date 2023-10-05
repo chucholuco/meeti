@@ -31,8 +31,8 @@ module.exports = function() {
         authController.usuarioAutenticado,
         gruposController.formNuevoGrupo)        
     
-    router.post('/nuevo-grupo', 
-        
+    router.post('/nuevo-grupo',  
+        gruposController.subirImagen,       
         gruposController.crearGrupo)   
 
     return router
