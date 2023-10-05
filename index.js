@@ -14,6 +14,7 @@ const db = require('./config/db')
     require('./models/Usuarios')
     require('./models/Categorias')
     require('./models/Grupos')
+    require('./models/Meeti')
     db.sync().then(() => console.log('DB Conectada')).catch((error) => console.log(error))
 
 // variables de desarrollo    
@@ -26,7 +27,7 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
-// Express Validator (validacion con bastantes funciones)
+// Express Validator (validacion con bastantes funciones) 
 app.use(expressValidator())
 
 // Habilitar EJS como template engine

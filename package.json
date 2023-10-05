@@ -4,15 +4,23 @@
   "description": "prouecto Meeti con node, postgresql, y ejs",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./index.js"
+    "dev": "nodemon ./index.js",
+    "start": "concurrently \"npm run dev\" \"npm run watch\" ",
+    "watch": "webpack --mode development"
   },
   "author": "jesus tapia",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.22.20",
+    "babel-loader": "^9.1.3",
+    "nodemon": "^3.0.1",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
     "bcrypt-nodejs": "^0.0.3",
+    "concurrently": "^8.2.1",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
@@ -21,6 +29,7 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.17.3",
     "express-validator": "^5.3.1",
+    "leaflet-geosearch": "^3.10.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.5",
     "passport": "^0.6.0",
@@ -28,6 +37,7 @@
     "pg": "^8.11.3",
     "sequelize": "^6.33.0",
     "shortid": "^2.2.16",
+    "slug": "^8.2.3",
     "uuid": "^9.0.1"
   }
 }
