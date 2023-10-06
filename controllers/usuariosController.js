@@ -75,3 +75,56 @@ exports.formIniciarSesion = (req, res) => {
     })
 }
 
+exports.formEditarPerfil = async (req, res) => {
+    const usuario = await Usuarios.findByPk(req.user.id)
+
+    res.render('editar-perfil', {
+        nombrePagina: 'Editar Perfil', 
+        usuario
+    })
+}
+
+exports.editarPerfil = async (req, res) => {
+    const usuario = await Usuarios.findByPk(req.user.id)
+
+    req.sanitizeBody('nombre')
+    req.sanitizeBody('email')
+
+    const {nombre, descripcion, email} = req.body
+
+    usuario.nombre = nombre
+    usuario.descripcion = descripcion
+    usuario.email = email
+
+    await usuario.save()
+
+    req.flash('exito', 'Cambios Guardados Correctamente')
+    res.redirect('/administracion')
+}
+
+exports.formCambiarPassword = async (req, res) => {
+    res.render('cambiar-password', {
+        nombrePagina: 'Cambiar Password'        
+    })
+}
+
+exports.cambiarPassword = async (req, res, next) => {
+    const usuario = await Usuarios.findByPk(req.user.id)
+
+    if (!usuario.validarPassword(req.body.anterior)) {
+        req.flash('error', 'El password actual es incorrecto')
+        res.redirect('/administracion')
+        return next()
+    }
+
+    const hash = usuario.hashPassword(req.body.nuevo)
+    usuario.password = hash
+
+    await usuario.save()
+
+    req.logout()
+
+    req.flash('exito', 'Password modificado Correctamente, vuelve a iniciar sesion')
+    res.redirect('/iniciar-sesion')
+}
+

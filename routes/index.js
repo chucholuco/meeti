@@ -91,5 +91,21 @@ module.exports = function() {
         authController.usuarioAutenticado,
         meetiController.eliminarMeeti)
 
+    router.get('/editar-perfil',
+        authController.usuarioAutenticado,
+        usuariosController.formEditarPerfil)  
+        
+    router.post('/editar-perfil',
+        authController.usuarioAutenticado,
+        usuariosController.editarPerfil)  
+
+    router.get('/cambiar-password',
+        authController.usuarioAutenticado,
+        usuariosController.formCambiarPassword)  
+
+    router.post('/cambiar-password',
+        authController.usuarioAutenticado,
+        usuariosController.cambiarPassword)  
+
     return router
 }
