@@ -70,7 +70,14 @@ module.exports = function() {
         authController.usuarioAutenticado,
         meetiController.formNuevoMeeti)
     
+    router.post('/nuevo-meeti',
+        authController.usuarioAutenticado,
+        meetiController.sanitizarMeeti,
+        meetiController.crearMeti)
     
+    router.get('/editar-meeti/:id',
+        authController.usuarioAutenticado,
+        meetiController.formEditarrMeeti)
 
     return router
 }
