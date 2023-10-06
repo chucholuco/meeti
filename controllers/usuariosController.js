@@ -1,6 +1,51 @@
 const Usuarios = require('../models/Usuarios')
 const enviarEmail = require('../handlers/emails')
 
+const multer = require('multer')
+const shortid = require('shortid')
+const fs = require('fs')
+
+const configuracionMulter = {
+    limits: {fileSize: 100000},
+    storage: fileStorage = multer.diskStorage({
+        destination: (req, file, next) => {
+            next(null, __dirname+'/../public/uploads/perfiles/')
+        },
+        filename: (req, file, next) => {
+            const extension = file.mimetype.split('/')[1]
+            next(null, `${shortid.generate()}.${extension}`)
+        }
+    }),
+    fileFilter(req, file, next) {
+        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+            next(null, true)
+        } else {
+            next(new Error('Formato no valido'), false)
+        }
+    }
+}
+const upload = multer(configuracionMulter).single('imagen')
+
+exports.subirImagen = (req, res, next) => {
+    upload(req, res, function(error) {
+        if(error) {
+            if (error instanceof multer.MulterError) {
+                if (error.code === 'LIMIT_FILE_SIZE') {
+                    req.flash('error', 'El Archivo es muy grande')
+                } else {
+                    req.flash('error', error.message)
+                }
+            } else if (error.hasOwnProperty('message')) {
+                req.flash('error', error.message)
+            }
+            res.redirect('back')
+            return
+        } else {
+            next()
+        }
+    })
+}
+
 exports.formCrearCuenta = (req, res) => {
     res.render('crear-cuenta', {
         nombrePagina: 'Crea tu Cuenta'
@@ -128,3 +173,33 @@ exports.cambiarPassword = async (req, res, next) => {
     res.redirect('/iniciar-sesion')
 }
 
+exports.formSubirImagenPerfil = async (req, res) => {
+    const usuario = await Usuarios.findByPk(req.user.id)
+
+    res.render('imagen-perfil', {
+        nombrePagina: 'Subir Imagen perfil',
+        usuario
+    })
+}
+
+exports.guardarImagenPerfil = async (req, res) => {
+    const usuario = await Usuarios.findByPk(req.user.id)
+
+    if (req.file && usuario.imagen) {
+        const imagenAnteriorPath = __dirname +`/../public/uploads/perfiles/${usuario.imagen}`
+        fs.unlink(imagenAnteriorPath, (error) => {
+            if (error) {
+                console.log(error)
+            }
+            return
+        })
+
+        if (req.file) {
+            usuario.imagen = req.file.filename
+        }
+
+        await usuario.save()
+        req.flash('exito', 'Cambios almacenados correctamente')
+        res.redirect('/administracion')
+    }
+}
