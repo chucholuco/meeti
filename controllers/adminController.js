@@ -13,7 +13,10 @@ exports.panelAdministracion = async (req, res) => {
     consultas.push(Meeti.findAll({ where: {
             usuarioId: req.user.id,
             fecha: { [Op.gte] : moment(new Date()).format("YYYY-MM-DD")}
-        }
+        },
+        order: [
+            ['fecha', 'DESC']
+        ]
     }))
     consultas.push(Meeti.findAll({ where: {
             usuarioId: req.user.id,

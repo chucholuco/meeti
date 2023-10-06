@@ -1,6 +1,8 @@
 const Grupos = require('../models/Grupos')
 const Meeti = require('../models/Meeti')
 
+const { v4: uuidv4 } = require('uuid')
+
 exports.formNuevoMeeti = async (req, res) => {
     const grupos = await Grupos.findAll({where: { usuarioId: req.user.id }})
 
@@ -21,6 +23,8 @@ exports.crearMeti = async (req, res) => {
     if (req.body.cupo === '') {
         meeti.cupo = 0
     }
+
+    meeti.id = uuidv4
 
     try {
         await Meeti.create(meeti)
