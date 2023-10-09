@@ -18,3 +18,5 @@ npm-debug.log
 .vscode/
 
 public/uploads/grupos/
+
+variables.env
