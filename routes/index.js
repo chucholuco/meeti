@@ -1,139 +1,200 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 
-const homeController = require('../controllers/homeController')
-const usuariosController = require('../controllers/usuariosController')
-const authController = require('../controllers/authController')
-const adminController = require('../controllers/adminController')
-const gruposController = require('../controllers/gruposController')
-const meetiController = require('../controllers/meetiController')
-const meetiControllerFE = require('../controllers/frontend/meetiControllerFE')
+const homeController = require('../controllers/homeController');
+const usuariosController = require('../controllers/usuariosController');
+const authController = require('../controllers/authController');
+const adminController = require('../controllers/adminController');
+const gruposController = require('../controllers/gruposController');
+const meetiController = require('../controllers/meetiController');
 
+const meetiControllerFE  = require('../controllers/frontend/meetiControllerFE');
+const usuariosControllerFE  = require('../controllers/frontend/usuariosControllerFE.js');
+const gruposControllerFE  = require('../controllers/frontend/gruposControllerFE');
+const comentariosControllerFE  = require('../controllers/frontend/comentariosControllerFE');
+const busquedaControllerFE  = require('../controllers/frontend/busquedaControllerFE');
 
 module.exports = function() {
 
-    // Area publica
-    
-    router.get('/', homeController.home)
+    /** AREA PUBLICA */
+    router.get('/', homeController.home);
 
     // Muestra un meeti
     router.get('/meeti/:slug', 
-        meetiControllerFE.mostrarMeeti)
+        meetiControllerFE.mostrarMeeti
+    );
 
-    // Confirma la assistencia al meeti
+    // Confirma la asistencia a meeti
     router.post('/confirmar-asistencia/:slug', 
-        meetiControllerFE.confirmarAsistencia)
+        meetiControllerFE.confirmarAsistencia
+    );
 
-    // Crear y confirmar cuentas
-    router.get('/crear-cuenta', usuariosController.formCrearCuenta)
-    router.post('/crear-cuenta', usuariosController.crearNuevaCuenta)
-    router.get('/confirmar-cuenta/:correo', usuariosController.confirmarCuenta)
+    /** Muestra asistentes al meeti */
+    router.get('/asistentes/:slug',
+        meetiControllerFE.mostrarAsistentes
+    );
+
+    /** Agrega Comentarios en el Meeti */
+    router.post('/meeti/:id', 
+        comentariosControllerFE.agregarComentario
+    );
+    /** Elimina comentarios en el meeti */
+    router.post('/eliminar-comentario',
+        comentariosControllerFE.eliminarComentario
+    );
+
+    // muestra perfiles en el front end
+    router.get('/usuarios/:id', 
+        usuariosControllerFE.mostrarUsuario
+    );
+
+    // muestra los grupos en el front end
+    router.get('/grupos/:id', 
+        gruposControllerFE.mostrarGrupo
+    );
+
+    // Muestra meeti's por categoria
+    router.get('/categoria/:categoria',
+        meetiControllerFE.mostrarCategoria
+    );
+
+    // Añade la busqueda
+    router.get('/busqueda', 
+        busquedaControllerFE.resultadosBusqueda
+    )
+
+    /** Crear y confirmar cuentas */
+    router.get('/crear-cuenta', usuariosController.formCrearCuenta);
+    router.post('/crear-cuenta', usuariosController.crearNuevaCuenta);
+    router.get('/confirmar-cuenta/:correo', usuariosController.confirmarCuenta);
 
     // Iniciar sesion
-    router.get('/iniciar-sesion', usuariosController.formIniciarSesion)
-    router.post('/iniciar-sesion', authController.autenticarUsuario)
+    router.get('/iniciar-sesion', usuariosController.formIniciarSesion);
+    router.post('/iniciar-sesion', authController.autenticarUsuario);
 
-    // Cerrar sesion
+    // cerrar sesion
     router.get('/cerrar-sesion',
         authController.usuarioAutenticado,
-        authController.cerrarSesion)
+        authController.cerrarSesion
+    );
+ 
 
-    // Area privada
+    /** AREA PRIVADA */
 
-
-    // Paner de administracion
-    router.get('/administracion', 
-        authController.usuarioAutenticado,    
-        adminController.panelAdministracion)
-
-    // nuevos grupos
-    router.get('/nuevo-grupo', 
+    /** Panel de administración */
+    router.get('/administracion',  
         authController.usuarioAutenticado,
-        gruposController.formNuevoGrupo)        
-    
-    router.post('/nuevo-grupo',  
-        authController.usuarioAutenticado,
-        gruposController.subirImagen,       
-        gruposController.crearGrupo)   
+        adminController.panelAdministracion 
+    );
 
-    // Editar Grupos
-    router.get('/editar-grupo/:grupoId',
+    /** Nuevos Grupos */
+    router.get('/nuevo-grupo',
         authController.usuarioAutenticado,
-        gruposController.formEditarGrupo)
-    
-    router.post('/editar-grupo/:grupoId',
-        authController.usuarioAutenticado,
-        gruposController.editarGrupo)
+        gruposController.formNuevoGrupo
+    );
 
-    // Editar imagen de grupo
-    router.get('/imagen-grupo/:grupoId',
+    router.post('/nuevo-grupo',
         authController.usuarioAutenticado,
-        gruposController.formEditarImagen)
-    
-    router.post('/imagen-grupo/:grupoId',
+        gruposController.subirImagen, 
+        gruposController.crearGrupo 
+    )
+
+    // Editar grupos
+    router.get('/editar-grupo/:grupoId', 
+        authController.usuarioAutenticado,
+        gruposController.formEditarGrupo
+    )
+    router.post('/editar-grupo/:grupoId', 
+        authController.usuarioAutenticado,
+        gruposController.editarGrupo
+    )
+
+    // Editar la imagen del grupo
+    router.get('/imagen-grupo/:grupoId', 
+        authController.usuarioAutenticado,
+        gruposController.formEditarImagen
+    );
+    router.post('/imagen-grupo/:grupoId', 
         authController.usuarioAutenticado,
         gruposController.subirImagen,
-        gruposController.editarImagen)
+        gruposController.editarImagen
+    );
 
     // Eliminar grupos
-    router.get('/eliminar-grupo/:grupoId',
+    router.get('/eliminar-grupo/:grupoId', 
         authController.usuarioAutenticado,
-        gruposController.formEliminarGrupo)
-    
-    router.post('/eliminar-grupo/:grupoId',
+        gruposController.formEliminarGrupo
+    );
+    router.post('/eliminar-grupo/:grupoId', 
         authController.usuarioAutenticado,
-        gruposController.eliminarGrupo)
+        gruposController.eliminarGrupo
+    );
 
     // Nuevos Meeti
-    router.get('/nuevo-meeti',
+    router.get('/nuevo-meeti', 
         authController.usuarioAutenticado,
-        meetiController.formNuevoMeeti)
-    
-    router.post('/nuevo-meeti',
+        meetiController.formNuevoMeeti
+    );
+    // Nuevos Meeti
+    router.post('/nuevo-meeti', 
         authController.usuarioAutenticado,
         meetiController.sanitizarMeeti,
-        meetiController.crearMeti)
-    
-    router.get('/editar-meeti/:id',
-        authController.usuarioAutenticado,
-        meetiController.formEditarrMeeti)
-    
-    router.post('/editar-meeti/:id',
-        authController.usuarioAutenticado,
-        meetiController.editarMeeti)
+        meetiController.crearMeti
+    );
 
+    // Editar Meeti
+    router.get('/editar-meeti/:id', 
+        authController.usuarioAutenticado,
+        meetiController.formEditarMeeti
+    );
+
+    router.post('/editar-meeti/:id', 
+        authController.usuarioAutenticado,
+        meetiController.editarMeeti
+    );
+
+    // Eliminar Meeti
     router.get('/eliminar-meeti/:id',
         authController.usuarioAutenticado,
-        meetiController.formEliminarMeeti)
-
+        meetiController.formEliminarMeeti
+    );
     router.post('/eliminar-meeti/:id',
         authController.usuarioAutenticado,
-        meetiController.eliminarMeeti)
+        meetiController.eliminarMeeti
+    );
 
+    // Editar información de perfil
     router.get('/editar-perfil',
         authController.usuarioAutenticado,
-        usuariosController.formEditarPerfil)  
-        
+        usuariosController.formEditarPerfil
+    );
     router.post('/editar-perfil',
         authController.usuarioAutenticado,
-        usuariosController.editarPerfil)  
+        usuariosController.editarPerfil
+    );
 
+    // modifica el password
     router.get('/cambiar-password',
         authController.usuarioAutenticado,
-        usuariosController.formCambiarPassword)  
-
+        usuariosController.formCambiarPassword
+    );
     router.post('/cambiar-password',
         authController.usuarioAutenticado,
-        usuariosController.cambiarPassword)  
+        usuariosController.cambiarPassword
+    );
 
-    router.get('/imagen-perfil',
+    // Imagenes de perfil
+    router.get('/imagen-perfil', 
         authController.usuarioAutenticado,
-        usuariosController.formSubirImagenPerfil)
-
-    router.post('/imagen-perfil',
+        usuariosController.formSubirImagenPerfil
+    );
+    router.post('/imagen-perfil', 
         authController.usuarioAutenticado,
         usuariosController.subirImagen,
-        usuariosController.guardarImagenPerfil)
+        usuariosController.guardarImagenPerfil
+    );
 
-    return router
+
+    return router;
 }
+
