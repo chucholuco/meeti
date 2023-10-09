@@ -133,7 +133,7 @@
 <div class="contenedor cercanos">
     <% if(cercanos.length > 0 ) { %>
         <% cercanos.forEach(meeti => { %>
-            <%- include partials/card-meeti.ejs %>
+            <%- include('partials/card-meeti.ejs') %>
         <% }) %>
     <% } else {  %>
         <p>No hay Meeti's Cercanos</p>

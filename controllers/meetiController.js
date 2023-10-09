@@ -54,7 +54,7 @@ exports.sanitizarMeeti = (req, res, next) => {
     next()
 }
 
-exports.formEditarrMeeti = async (req, res, next) => {
+exports.formEditarMeeti = async (req, res, next) => {
     const consultas = []
     consultas.push(Grupos.findAll({ where: {usuarioId: req.user.id}}))
     consultas.push(Meeti.findByPk(req.params.id))
